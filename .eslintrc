@@ -1,0 +1,17 @@
+{
+	"installedESLint": true,
+	"env": {
+		"es6": true
+	},
+	"parserOptions": {
+		"ecmaVersion": 6,
+		"sourceType": "module"
+	},
+	"rules": {
+		"semi": 2,
+		"comma-dangle": 0,
+		"eol-last": 0,
+		"keyword-spacing": 2,
+		"key-spacing": [2, { "beforeColon": false, "afterColon": true }]
+	}
+}

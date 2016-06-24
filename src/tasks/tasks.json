@@ -1,0 +1,6 @@
+{
+	"init": "  - Create a new application",
+	"start": " - Run the application in development mode",
+	"build": " - Build the application for production",
+	"deploy": "- Deploy the application"
+}
