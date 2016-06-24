@@ -1,11 +1,9 @@
-import { existsSync, readdirSync } from 'fs-extra';
+import { statSync, readdirSync } from 'fs-extra';
 
 export default function(folder) {
-	let folderExists = existsSync(folder);
-
-	if (folderExists) {
+	try {
 		return readdirSync(folder).length === 0;
-	} else {
+	} catch (error) {
 		return true;
 	}
 

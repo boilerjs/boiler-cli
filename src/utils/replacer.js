@@ -15,7 +15,7 @@ function replaceFile (item, params) {
 
 export default function (appPath, params, callback) {
 	let items = [];
-	let re = /(node_modules|img)/;
+	let re = /(node_modules|\.eot|\.woff2?|\.ttf|\.svg|\.png|\.jpg|\.jpeg|\.bmp|\.ico)/i;
 
 	walk(appPath)
 		.on('data', (item) => {
@@ -27,7 +27,9 @@ export default function (appPath, params, callback) {
 			try {
 				items.forEach((item) => {
 					replaceFile(item, params);
-				})
+				});
+
+				callback(null);
 			} catch (error) {
 				callback(error);
 			}

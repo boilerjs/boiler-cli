@@ -9,7 +9,7 @@ import Notifier from '../utils/notifier';
 let plugins = {
 	development: { HtmlWebpackPlugin, Notifier },
 	production: { CleanWebpackPlugin, ExtractTextPlugin, HtmlWebpackPlugin, Notifier }
-}
+};
 
 export default function (mode = 'development', options = {}, callback = () => {}) {
 	options.webpack = webpack;
