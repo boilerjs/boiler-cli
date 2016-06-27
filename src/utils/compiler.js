@@ -16,7 +16,7 @@ export default function (mode = 'development', options = {}, callback = () => {}
 	options.BOILER_PATH = resolve(__dirname, '../../');
 	options.plugins = plugins[mode];
 
-	let webpackConfigPath = resolve(process.cwd(), `webpack.${mode}.config.js`);
+	let webpackConfigPath = resolve(process.cwd(), `build/webpack.${mode}.config.js`);
 	let webpackConfig = require(webpackConfigPath)(options);
 
 	if (mode === 'development') {
