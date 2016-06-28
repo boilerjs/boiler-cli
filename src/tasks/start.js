@@ -11,17 +11,20 @@ let showErrorMessage = showErrors(red('An error occurred while starting the appl
 findFreePort(MIN_PORT, HOST, (error, port) => {
 	if (error) { return showErrorMessage(error); }
 
-	console.log(`${green('?')} ${bold('Application started:')} ${cyan('yes')}`);
-	console.log(`${green('?')} ${bold('Application watching for changes:')} ${cyan('yes')}`);
-	console.log(`${green('?')} ${bold('Application address:')} ${cyan('http://' + HOST + ':' + port)}`);
-	console.log();
-	console.log(green('Happy coding :)'));
-	console.log();
+	try {
+		compiler('development', { HOST, PORT: port }, (hasErrors, details) => {
+			if (hasErrors) { return showErrorMessage(details); }
 
-	compiler('development', { HOST, PORT: port }, (hasErrors, details) => {
-		if (hasErrors) { return showErrorMessage(details); }
-
-		console.log(details);
-		console.log();
-	});
+			console.log(`${green('?')} ${bold('Application started:')} ${cyan('yes')}`);
+			console.log(`${green('?')} ${bold('Application watching for changes:')} ${cyan('yes')}`);
+			console.log(`${green('?')} ${bold('Application address:')} ${cyan('http://' + HOST + ':' + port)}`);
+			console.log();
+			console.log(green('Happy coding :)'));
+			console.log();
+			console.log(details);
+			console.log();
+		});
+	} catch (error) {
+		showErrorMessage();
+	}
 });
