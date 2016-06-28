@@ -3,8 +3,10 @@ import downloadGitRepo from 'download-git-repo';
 import { resolve, basename } from 'path';
 import inquirer from 'inquirer';
 import { removeSync } from 'fs-extra';
-import getConfig from '../utils/getConfig';
+import ora from 'ora';
 import folderIsEmpty from '../utils/folderIsEmpty';
+import listTemplateRepositories from '../utils/listTemplateRepositories';
+import getConfig from '../utils/getConfig';
 import replacer from '../utils/replacer';
 import showErrors from '../utils/showErrors';
 
@@ -26,41 +28,48 @@ if ( !folderIsEmpty(appPath) ) {
 			name: 'organization',
 			message: 'Organization:',
 			default: getConfig().organization
-		},
-		{
+		}
+	];
+	let templateChoices = [];
+
+	listTemplateRepositories((error, repositories) => {
+		if (error) {
+			return showErrors(red('An error occurred while fetching templates repositories!'))(error);
+		}
+
+		repositories.forEach(({ description: name, full_name: value } = repository) => {
+			templateChoices.push({ name, value });
+		});
+
+		questions.push({
 			type: 'list',
 			name: 'appTemplate',
 			message: 'Template:',
-			choices: [
-				{
-					name: 'Marionette (legacy)',
-					value: 'boilerjs-templates/template-marionette'
-				},
-				{
-					name: 'Vue',
-					value: 'boilerjs-templates/template-vue'
-				}
-			]
-		}
-	];
+			choices: templateChoices
+		});
 
-	inquirer.prompt(questions).then(({ appName, organization, appTemplate }) => {
+		inquirer.prompt(questions).then(({ appName, organization, appTemplate }) => {
 
-		console.log();
+			console.log();
 
-		downloadGitRepo(appTemplate + '#dev', appPath, (error) => {
-			if (error) {
-				removeSync(appPath);
-				return showErrors(`${red('An error occurred while downloading')} ${cyan(appTemplate)} ${red('template!')}`)(error);
-			}
+			let spinner = ora('Fetching template').start();
 
-			replacer(appPath, { appName, organization }, (error) => {
+			downloadGitRepo(appTemplate + '#dev', appPath, (error) => {
 				if (error) {
 					removeSync(appPath);
-					return showErrors(`${red('An error occurred while replacing files!')}`)(error);
+					return showErrors(`${red('An error occurred while downloading')} ${cyan(appTemplate)} ${red('template!')}`)(error);
 				}
 
-				console.log(`${green('Application')} ${cyan(appName)} ${green('successfully created!')}`);
+				replacer(appPath, { appName, organization }, (error) => {
+					if (error) {
+						removeSync(appPath);
+						return showErrors(`${red('An error occurred while replacing files!')}`)(error);
+					}
+
+					spinner.stop();
+
+					console.log(`${green('Application')} ${cyan(appName)} ${green('successfully created!')}`);
+				});
 			});
 		});
 	});
