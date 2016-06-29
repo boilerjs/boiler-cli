@@ -7,6 +7,7 @@ import showErrors from '../utils/showErrors';
 const MIN_PORT = 3000;
 const HOST = '0.0.0.0';
 let showErrorMessage = showErrors(red('An error occurred while starting the application! Are you in a wrong folder, maybe?'));
+let showHeader = true;
 
 findFreePort(MIN_PORT, HOST, (error, port) => {
 	if (error) { return showErrorMessage(error); }
@@ -15,12 +16,16 @@ findFreePort(MIN_PORT, HOST, (error, port) => {
 		compiler('development', { HOST, PORT: port }, (hasErrors, details) => {
 			if (hasErrors) { return showErrorMessage(details); }
 
-			console.log(`${green('?')} ${bold('Application started:')} ${cyan('yes')}`);
-			console.log(`${green('?')} ${bold('Application watching for changes:')} ${cyan('yes')}`);
-			console.log(`${green('?')} ${bold('Application address:')} ${cyan('http://' + HOST + ':' + port)}`);
-			console.log();
-			console.log(green('Happy coding :)'));
-			console.log();
+			if (showHeader) {
+				console.log(`${green('?')} ${bold('Application started:')} ${cyan('yes')}`);
+				console.log(`${green('?')} ${bold('Application watching for changes:')} ${cyan('yes')}`);
+				console.log(`${green('?')} ${bold('Application address:')} ${cyan('http://' + HOST + ':' + port)}`);
+				console.log();
+				console.log(green('Happy coding :)'));
+				console.log();
+				showHeader = false;
+			}
+
 			console.log(details);
 			console.log();
 		});
