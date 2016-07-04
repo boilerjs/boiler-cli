@@ -2,13 +2,12 @@ import { resolve } from 'path';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import CleanWebpackPlugin from 'clean-webpack-plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import Notifier from '../utils/notifier';
 
 let plugins = {
 	development: { HtmlWebpackPlugin, Notifier },
-	production: { CleanWebpackPlugin, ExtractTextPlugin, HtmlWebpackPlugin, Notifier }
+	production: { ExtractTextPlugin, HtmlWebpackPlugin, Notifier }
 };
 
 export default function (mode = 'development', options = {}, callback = () => {}) {
@@ -18,11 +17,6 @@ export default function (mode = 'development', options = {}, callback = () => {}
 
 	let webpackConfigPath = resolve(process.cwd(), `build/webpack.${mode}.config.js`);
 	let webpackConfig = require(webpackConfigPath)(options);
-
-	if (mode === 'development') {
-		webpackConfig.entry.unshift(resolve(__dirname, 'silentWebpack.js'));
-	}
-
 	let compiler = webpack(webpackConfig);
 
 	if (mode === 'development') {
