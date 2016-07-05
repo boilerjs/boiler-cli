@@ -9,7 +9,7 @@ try {
 	let deployScript = require(deployScriptPath);
 
 	if (typeof deployScript === 'function') {
-		deployScript(require('fs-extra'), require('chalk'));
+		deployScript(require('fs-extra'), require('chalk'), require('inquirer'));
 	} else {
 		showErrorMessage('The deploy script must return a function.');
 	}
